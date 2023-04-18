@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</head>
+
+<body class="p-3">
+    <div th:if="${mensagem}" th:text="${mensagem}"></div>
+    <form action="/book/form/save" method="POST">
+        <div th:if="${book}" class="mb-3">
+            <label class="form-label h4">Editar Livro</label>
+            <input class="form-control" type="text" readonly id="id" name="id" th:value="${book?.id}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"> Nome:</label>
+            <input class="form-control" type="text" id="name" name="name" th:value="${book?.name}" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Autor:</label>
+            <select class="form-select" name="author">
+                <option th:each="author : ${authorList}" th:value="${author.id}" th:text="${author.name}"
+                    th:selected="${author.id}==${book?.author?.id}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Categoria:</label>
+            <select class="form-select" name="category">
+                <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"
+                    th:selected="${category.id}==${book?.category?.id}"></option>
+            </select>
+        </div>
+
+        <div th:if="${book}">
+            <button type="submit" class="btn btn-primary">Salvar Livro</button>
+        </div>
+        <div th:if="${book}==null">
+            <button type="submit" class="btn btn-primary">Adicionar Livro</button>
+        </div>
+    </form>
+</body>
+
+</html>

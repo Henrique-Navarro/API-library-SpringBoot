@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <h2>Lista de Livros</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Book Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Author</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="book:${bookList}">
+                <th scope="row" th:text="${book.id}">1</th>
+                <td th:text="${book.name}"></td>
+                <td th:text="${book.category.name}"></td>
+                <td th:text="${book.author.name}"></td>
+                <td>
+                    <a th:href="@{/edit/{id}(id=${book.id})}">
+                        <button type='button' class='btn btn-outline-secondary'><span
+                                class='bi bi-pencil'></span></button>
+                    </a>
+                    <a th:href="@{/delete/{id}(id=${book.id})}">
+                        <button type='button' class='btn btn-outline-danger'><span class='bi bi-trash'></span></button>
+                    </a>
+                </td>
+                <td>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a ht:href="">
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+            data-bs-target="#exampleModal"><span class="bi bi-search"></span>Search</button>
+    </a>
+
+    <a th:href="@{/book/form/add}">
+        <button type="button" class="btn btn-outline-success"><span class="bi bi-book">Book</span></button>
+    </a>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Pesquisa de Livro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="nome-busca" class="col-form-label">Nome para buscar:</label>
+                            <input type="text" class="form-control" id="nome-busca">
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="pesquisarBook()">Buscar</button>
+                    </form>
+                    <div style="overflow: scroll;height: 300px;overflow-x: hidden;">
+                        <table class="table" id="tabela-resultados">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Categoria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+        integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script>
+        function pesquisarBook() {
+            var nome = $('#nome-busca').val()
+            if (nome != null && nome.trim() != '') {
+                $.ajax({
+                    method: "GET",
+                    url: "searchByName",
+                    data: "name=" + nome,
+                    contentType: "application/json;charset=utf-8",
+                    success: function (response) {
+                        $("#tabela-resultados > tbody > tr").remove();
+                        for (var i = 0; i < response.length; i++) {
+                            $("#tabela-resultados > tbody").append(
+                                "<tr><td>" + response[i].id +
+                                "</td><td>" + response[i].name +
+                                "</td><td>" + response[i].category.name
+                            )
+                        }
+                    }
+                }).fail(function (xhr, status, errorThrown) {
+                    alert("Erro ao Buscar: " + xhr.responseText);
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
